@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary to Satoshi Counter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 80%;
+            max-width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .counter {
+            font-size: 20px;
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            min-width: 280px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Enter Your Monthly Salary (EUR/USD):</h2>
+    <input type="number" id="salaryInput" placeholder="Enter salary" min="0">
+    <button onclick="startCounter()">Start</button>
+
+    <div class="counter">
+        <h3>Satoshis Earned:</h3>
+        <p id="satoshiCounter">0.0000000000000000</p>
+    </div>
+
+    <script>
+        let satoshisPerSecond = 0;
+        let startTime = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime();
+        let lastUpdateTime = Date.now();
+
+        function startCounter() {
+            let salary = parseFloat(document.getElementById("salaryInput").value);
+            if (isNaN(salary) || salary <= 0) {
+                alert("Please enter a valid salary.");
+                return;
+            }
+
+            let monthlySalaryInBTC = salary / 100000; // Approximation: 100,000 EUR/USD = 1 BTC
+            let secondsInMonth = (new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()) * 24 * 60 * 60;
+            satoshisPerSecond = (monthlySalaryInBTC * 100_000_000) / secondsInMonth;
+
+            lastUpdateTime = Date.now();
+            updateCounter();
+            setInterval(updateCounter, 1000);
+        }
+
+        function updateCounter() {
+            let currentTime = Date.now();
+            let elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+            let earnedSatoshis = elapsedSeconds * satoshisPerSecond;
+
+            document.getElementById("satoshiCounter").textContent = earnedSatoshis.toFixed(16);
+        }
+    </script>
+
+</body>
+</html>
