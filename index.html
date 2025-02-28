@@ -37,60 +37,15 @@
 </head>
 <body>
 
-    <h2>Enter Your Monthly Salary (EUR/USD):</h2>
     <div id="input-container">
+        <h2>Enter Your Monthly Salary (EUR/USD):</h2>
         <input type="number" id="salaryInput" placeholder="Enter salary" min="0">
         <button onclick="startCounter()">Start</button>
     </div>
 
     <div class="counter" id="counter-container">
+        <h2>Mined since the beginning of the month</h2>
         <h3>Satoshis Earned:</h3>
         <p id="satoshiCounter">0.0000000000000000</p>
         <h3>BTC Earned:</h3>
         <p id="btcCounter">0.0000000000000000</p>
-    </div>
-
-    <script>
-        let satoshisPerSecond = 0;
-        let btcPerSecond = 0;
-        let startTime = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime();
-        let lastUpdateTime = Date.now();
-        let interval;
-
-        function startCounter() {
-            let salary = parseFloat(document.getElementById("salaryInput").value);
-            if (isNaN(salary) || salary <= 0) {
-                alert("Please enter a valid salary.");
-                return;
-            }
-
-            // Hide input and show counter
-            document.getElementById("input-container").style.display = "none";
-            document.getElementById("counter-container").style.display = "block";
-
-            let monthlySalaryInBTC = salary / 100000; // Approximation: 100,000 EUR/USD = 1 BTC
-            let secondsInMonth = (new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()) * 24 * 60 * 60;
-            btcPerSecond = monthlySalaryInBTC / secondsInMonth;
-            satoshisPerSecond = btcPerSecond * 100_000_000;
-
-            lastUpdateTime = Date.now();
-            updateCounter();
-
-            // Update every 0.25 seconds
-            clearInterval(interval);
-            interval = setInterval(updateCounter, 250);
-        }
-
-        function updateCounter() {
-            let currentTime = Date.now();
-            let elapsedSeconds = (currentTime - startTime) / 1000;
-            let earnedSatoshis = elapsedSeconds * satoshisPerSecond;
-            let earnedBTC = elapsedSeconds * btcPerSecond;
-
-            document.getElementById("satoshiCounter").textContent = earnedSatoshis.toFixed(16);
-            document.getElementById("btcCounter").textContent = earnedBTC.toFixed(16);
-        }
-    </script>
-
-</body>
-</html>
